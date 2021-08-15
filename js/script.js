@@ -1,12 +1,12 @@
 'use strict';
 
-let ytURL = /(?:https?:\/\/)?(?:www.|m.)?youtu(?:be\.com|\.be)\/(?:watch\?v=)?([a-z0-9_]+)(?:\?|&)?(new=1|new=true)?/i;
-let pList = document.querySelectorAll('p');
+const ytURL = /(?:https?:\/\/)?(?:www.|m.)?youtu(?:be\.com|\.be)\/(?:watch\?v=)?([a-z0-9-_]+)(?:\?|&)?(new=1|new=true)?/i;
+const pList = document.querySelectorAll('p');
 
-let createRealPlayer = function (element, youTubeId) {
-    let width = element.clientWidth;
-    let height = element.clientHeight;
-    let template = `<iframe
+const createRealPlayer = function (element, youTubeId) {
+  const width = element.clientWidth;
+  const height = element.clientHeight;
+  const template = `<iframe
             width="${width}" height="${height}"
             src="https://www.youtube.com/embed/${youTubeId}?rel=0&showinfo=0&autoplay=1"
             title="YouTube video player"
@@ -15,27 +15,27 @@ let createRealPlayer = function (element, youTubeId) {
             allowfullscreen>
         </iframe>`;
 
-    element.innerHTML = template;
-}
+  element.innerHTML = template;
+};
 
-let assignHandlers = function (element, youTubeId) {
-    let videoCover = element.querySelector('.video-cover');
-    let videoButton = element.querySelector('.video-button');
+const assignHandlers = function (element, youTubeId) {
+  const videoCover = element.querySelector('.video-cover');
+  const videoButton = element.querySelector('.video-button');
 
-    videoCover.addEventListener('click', function (evt) {
-        evt.preventDefault();
-        createRealPlayer(element, youTubeId);
-    });
+  videoCover.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    createRealPlayer(element, youTubeId);
+  });
 
-    videoButton.addEventListener('click', function (evt) {
-        evt.preventDefault();
-        createRealPlayer(element, youTubeId);
-    });
-}
+  videoButton.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    createRealPlayer(element, youTubeId);
+  });
+};
 
-let createFakePlayer = function (youTubeId, isNewWindow)  {
-    let playerWrapper = document.createElement('div');
-    let template = `<div class="video-player">
+const createFakePlayer = function (youTubeId, isNewWindow) {
+  const playerWrapper = document.createElement('div');
+  const template = `<div class="video-player">
                 <a class="video-cover" href="https://youtu.be/${youTubeId}" target="_blank">
                     <picture>
                         <source srcset="https://i.ytimg.com/vi_webp/${youTubeId}/sddefault.webp" type="image/webp">
@@ -49,22 +49,22 @@ let createFakePlayer = function (youTubeId, isNewWindow)  {
                 </a>
             </div>`;
 
-    playerWrapper.innerHTML = template;
-    playerWrapper.classList.add('video-wrapper');
+  playerWrapper.innerHTML = template;
+  playerWrapper.classList.add('video-wrapper');
 
-    if (isNewWindow) {
-        assignHandlers(playerWrapper, youTubeId);
-    }
+  if (isNewWindow) {
+    assignHandlers(playerWrapper, youTubeId);
+  }
 
-    return playerWrapper;
+  return playerWrapper;
 };
 
 pList.forEach((element) => {
-    let ytMatch = element.innerText.match(ytURL);
-    if (!ytMatch) {
-        return;
-    }
+  const ytMatch = element.innerText.match(ytURL);
+  if (!ytMatch) {
+    return;
+  }
 
-    element.innerHTML = '';
-    element.appendChild(createFakePlayer(ytMatch[1], !ytMatch[2]));
+  element.innerHTML = '';
+  element.appendChild(createFakePlayer(ytMatch[1], !ytMatch[2]));
 });
